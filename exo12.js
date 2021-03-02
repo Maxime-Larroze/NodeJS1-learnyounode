@@ -1,18 +1,17 @@
-const http = require('http')
+let http = require('http')
+let map = require('through2-map')
 
-const stream = require('stream')
+let port = process.argv[2]
 
-http.createServer(function(req, res) {
-   if(req["method"] != "POST")
-      return res.end("Server responds to POST requests only.");
-
-   // 'OK' HTTP code
-   res.writeHead(200, {'content-type': 'text/plain'})
-
-   res.on('data', function(data){
-      data.toString().toUpperCase();
-   });
-
-   req.pipe(res);
-   res.end();
-}).listen(process.argv[2]);
+http.createServer(function (request, response) {
+  if (request.method === 'POST') {
+    response.writeHead(200, {'Content-Type': 'text/plain'})
+    request.pipe(map(function (chunk) {
+      return chunk.toString().toUpperCase()
+    })).pipe(response)
+  } else {
+    response.writeHead(405)
+  }
+}).listen(+port, function () {
+  console.log('Server listening on http://localhost:%s', port)
+})
