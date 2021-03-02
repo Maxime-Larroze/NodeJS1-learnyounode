@@ -1,7 +1,7 @@
-const http = require('http')
-const url = require('url')
+let http = require('http')
+let url = require('url')
 
-const port = process.argv[2]
+let port = process.argv[2]
 
 const parseTime = function (time) {
   return {
